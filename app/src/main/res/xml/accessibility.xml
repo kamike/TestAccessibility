@@ -8,7 +8,7 @@
     android:canRetrieveWindowContent="true"
     android:description="@string/app_name"
     android:notificationTimeout="0"
-
+    android:packageNames="com.tencent.mm"
     />
     <!--android:packageNames="com.example.wangtao.testaccessibility"-->
     <!--android:accessibilityEventTypes="typeAllMask"-->

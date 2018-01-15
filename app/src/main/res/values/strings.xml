@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TestAccessibility</string>
+    <string name="service_description">这是一个辅助功能啊啊</string>
 </resources>
