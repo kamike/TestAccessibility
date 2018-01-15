@@ -6,6 +6,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Path;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
@@ -42,26 +45,26 @@ public class MyService extends AccessibilityService {
         AddAllToListSource(listRoot, rootWindow);
         AccessibilityNodeInfo source = event.getSource();
 
-        if (rootWindow != null) {
-            List<AccessibilityNodeInfo> listSearch = rootWindow.findAccessibilityNodeInfosByText("2");
-            LogUtils.i("====查找到多少条：" + listSearch);
-            for (AccessibilityNodeInfo info : listSearch) {
-                LogUtils.i("====root:" + info.toString());
-                boolean isSUccess = info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                AccessibilityNodeInfo parent = info.getParent();
-
-                LogUtils.i("==isSUccess:" + isSUccess);
-                while (parent != null) {
-                    if (parent.isClickable()) {
-                        parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                        break;
-                    }
-                    parent = parent.getParent();
-                }
-
-
-            }
-        }
+//        if (rootWindow != null) {
+//            List<AccessibilityNodeInfo> listSearch = rootWindow.findAccessibilityNodeInfosByText("2");
+//            LogUtils.i("====查找到多少条：" + listSearch);
+//            for (AccessibilityNodeInfo info : listSearch) {
+//                LogUtils.i("====root:" + info.toString());
+//                boolean isSUccess = info.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+//                AccessibilityNodeInfo parent = info.getParent();
+//
+//                LogUtils.i("==isSUccess:" + isSUccess);
+//                while (parent != null) {
+//                    if (parent.isClickable()) {
+//                        parent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+//                        break;
+//                    }
+//                    parent = parent.getParent();
+//                }
+//
+//
+//            }
+//        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             List<AccessibilityWindowInfo> list = getWindows();
@@ -70,20 +73,43 @@ public class MyService extends AccessibilityService {
                 LogUtils.i("====window:" + info.toString());
             }
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
 
-            GestureDescription.Builder builder = new GestureDescription.Builder();
-            Path path = new Path();
-            path.lineTo(ScreenUtils.getScreenWidth(),ScreenUtils.getScreenHeight()*0.8f);
-            builder.addStroke(new GestureDescription.StrokeDescription(path, 10, 30));
-            boolean isDispatched = dispatchGesture(builder.build(), new GestureResultCallback() {
+
+        //sendEmptyMessageDelayed(0,3000);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            final Handler handler = new Handler() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
-                public void onCompleted(GestureDescription gestureDescription) {
-                    super.onCompleted(gestureDescription);
-                    LogUtils.i("======点击回调==" + gestureDescription);
+                public void handleMessage(Message msg) {
+                    sendEmptyMessageDelayed(0,3000);
+                    GestureDescription.Builder builder = new GestureDescription.Builder();
+                    Path path = new Path();
+                    path.moveTo(ScreenUtils.getScreenWidth() / 2, ScreenUtils.getScreenHeight() * 0.8f);
+//                    path.lineTo(ScreenUtils.getScreenWidth()/2, ScreenUtils.getScreenHeight() * 0.8f);
+//                    path.lineTo(ScreenUtils.getScreenWidth()+300, ScreenUtils.getScreenHeight() * 0.8f-100);
+                    builder.addStroke(new GestureDescription.StrokeDescription(path, 30, 300));
+
+                    boolean isDispatched = dispatchGesture(builder.build(), new GestureResultCallback() {
+                        @Override
+                        public void onCompleted(GestureDescription gestureDescription) {
+                            super.onCompleted(gestureDescription);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                LogUtils.i("======点击回调==" + gestureDescription.getStrokeCount());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(GestureDescription gestureDescription) {
+                            super.onCancelled(gestureDescription);
+                            LogUtils.i("======点击回调=onCancelled=");
+                        }
+                    }, null);
+                    LogUtils.i("=====手势点击：" + isDispatched);
                 }
-            }, null);
-            LogUtils.i("=====手势点击：" + isDispatched);
+
+            };
+            handler.sendEmptyMessageDelayed(0, 3000);
+
         }
     }
 

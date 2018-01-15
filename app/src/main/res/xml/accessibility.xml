@@ -3,10 +3,14 @@
     android:accessibilityEventTypes="typeAllMask"
     android:accessibilityFeedbackType="feedbackAllMask"
     android:accessibilityFlags="flagDefault"
+    android:canPerformGestures="true"
     android:canRequestTouchExplorationMode="true"
     android:canRetrieveWindowContent="true"
     android:description="@string/app_name"
-    android:canPerformGestures="true"
     android:notificationTimeout="0"
-    android:packageNames="com.tencent.mm" /><!--android:packageNames="com.tencent.mm" --><!--android:accessibilityEventTypes="typeAllMask"--><!--android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeNotificationStateChanged"-->
+
+    />
+    <!--android:packageNames="com.example.wangtao.testaccessibility"-->
+    <!--android:accessibilityEventTypes="typeAllMask"-->
+    <!--android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeNotificationStateChanged"-->
 
